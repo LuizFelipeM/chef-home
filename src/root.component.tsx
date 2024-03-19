@@ -1,3 +1,9 @@
+import { Carousel } from "./components/Carousel";
+
 export default function Root(props) {
-  return <section>{props.name} is mounted!</section>;
+  return (
+    <>
+      <Carousel />
+    </>
+  )
 }

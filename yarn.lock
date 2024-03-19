@@ -6280,6 +6280,11 @@ single-spa-react@^4.3.1:
   dependencies:
     browserslist-config-single-spa "^1.0.1"
 
+single-spa-svelte@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/single-spa-svelte/-/single-spa-svelte-2.1.1.tgz#dfd32f63b46215475706ac6e490ca84236faeabc"
+  integrity sha512-ppN9PNk7HNerEYa8fimZkSCYcfSoJL9s/86AHdSB6RsmyWXb7UIdHl4jh989idNVrFvbtE+PyhFGEygQfe+RgA==
+
 single-spa@^5.9.3:
   version "5.9.5"
   resolved "https://registry.yarnpkg.com/single-spa/-/single-spa-5.9.5.tgz#f47b3c91b009ebc3b224dd1086ef2b2dac524373"
