@@ -39,3 +39,4 @@ declare module "*.svg" {
 }
 
 declare module "@Chef/carousel"
+declare module "@Chef/utility"
