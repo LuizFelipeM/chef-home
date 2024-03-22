@@ -3,25 +3,63 @@ import * as singleSpa from "single-spa";
 import { api, state, routes } from "@Chef/utility";
 import { Carousel } from "./components/Carousel";
 import profilePic from "../assets/profile_pic_128_128.jpg"
+import { getLocalStorageItem, setLocalStorageItem } from "./utils/localStorage";
+
+interface Article {
+  author: string
+  content: string
+  description: string
+  publishedAt: string
+  source?: {
+    id?: number
+    name?: string
+  }
+  title: string
+  url: string
+  urlToImage: string
+}
+
 
 export default function Root(props) {
-  const [selectedRecipe, setSelectedRecipe] = useState<any>(undefined)
+  const [recipe, setRecipe] = useState<any>(getLocalStorageItem('recipe'))
+  const [articles, setArticles] = useState<Article[]>(getLocalStorageItem('articles') ?? [])
 
   useEffect(() => {
-    api.recipes.getRandom(1)
-      .then(({ recipes }) => setSelectedRecipe(recipes[0]))
-      .catch((error) => console.error(error))
+    const today = new Date();
+    today.setHours(23);
+    today.setMinutes(59);
+    today.setSeconds(59);
 
-    api.news.everything('food')
-      .then(news => console.log('news', news))
-      .catch(error => console.error(error))
+    const remainingTime = today.getTime() - new Date().getTime()
+
+    if (!recipe) {
+      api.recipes.getRandom(1)
+        .then(({ recipes }) => {
+          const selectedRecipe = recipes[0]
+          setRecipe(selectedRecipe)
+          setLocalStorageItem('recipe', selectedRecipe, remainingTime)
+        })
+        .catch((error) => console.error(error))
+    }
+
+    if (!articles || !articles.length) {
+      api.news.everything('food or culinary', 0, 5)
+        .then((res) => {
+          const selectedArticles = res.articles.filter((a) => !a.title.includes('[Removed]')).slice(0, 3)
+          setArticles(selectedArticles)
+          setLocalStorageItem('articles', JSON.stringify(selectedArticles), remainingTime)
+        })
+        .catch(error => console.error(error))
+    }
   }, [])
 
   const onClick: React.MouseEventHandler<HTMLAnchorElement> = (e) => {
     e.preventDefault();
-    state.next({ recipe: selectedRecipe });
-    singleSpa.navigateToUrl(routes.RECIPE.replace(":id", selectedRecipe.id));
+    state.next({ recipe: recipe });
+    singleSpa.navigateToUrl(routes.RECIPE.replace(":id", recipe.id));
   }
+
+  const toDate = (dateString: string) => (new Date(Date.parse(dateString)))
 
   return (
     <>
@@ -31,10 +69,10 @@ export default function Root(props) {
             <div className="tile is-parent is-vertical">
               <article className="tile is-child box">
                 <p className="title">A selected recipe for you</p>
-                <p className="subtitle">{selectedRecipe?.title}</p>
+                <p className="subtitle">{recipe?.title}</p>
                 <a onClick={onClick}>
                   <figure className="image is-5by4">
-                    <img src={selectedRecipe?.image} alt={selectedRecipe?.title} />
+                    <img src={recipe?.image} alt={recipe?.title} />
                   </figure>
                 </a>
               </article>
@@ -64,23 +102,31 @@ export default function Root(props) {
                 </div>
               </article>
             </div>
-            <div className="tile is-parent">
-              <article className="tile is-child box">
-                <div className="content">
-                  <p className="title">Tall column</p>
-                  <p className="subtitle">With even more content</p>
+            <div className="tile is-parent is-vertical">
+              {articles?.map((article, i) => (
+                <article key={i} className="tile is-child box">
                   <div className="content">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam semper diam at erat pulvinar, at pulvinar felis blandit. Vestibulum volutpat tellus diam, consequat gravida libero rhoncus ut. Morbi maximus, leo sit amet vehicula eleifend, nunc dui porta orci, quis semper odio felis ut quam.</p>
-                    <p>Suspendisse varius ligula in molestie lacinia. Maecenas varius eget ligula a sagittis. Pellentesque interdum, nisl nec interdum maximus, augue diam porttitor lorem, et sollicitudin felis neque sit amet erat. Maecenas imperdiet felis nisi, fringilla luctus felis hendrerit sit amet. Aenean vitae gravida diam, finibus dignissim turpis. Sed eget varius ligula, at volutpat tortor.</p>
-                    <p>Integer sollicitudin, tortor a mattis commodo, velit urna rhoncus erat, vitae congue lectus dolor consequat libero. Donec leo ligula, maximus et pellentesque sed, gravida a metus. Cras ullamcorper a nunc ac porta. Aliquam ut aliquet lacus, quis faucibus libero. Quisque non semper leo.</p>
+                    <p className="title">{article.title}</p>
+                    <p className="subtitle">
+                      Author: {article.author}
+                      <span className="is-pulled-right">
+                        {article.publishedAt ? toDate(article.publishedAt).toLocaleDateString('en-US') : ''}
+                      </span>
+                      <br />
+                      Source: <a href={article.url}>{article.source?.name ?? article.url}</a>
+                    </p>
+                    <div className="content">
+                      {article.content.replace(/\[\++.*\]/g, "")}
+                      <a href={article.url}>read more</a>
+                    </div>
                   </div>
-                </div>
-              </article>
+                </article>
+              ))}
             </div>
           </div>
         </div>
       </div>
-      {/* <Carousel /> */}
+      <Carousel />
     </>
   )
 }
