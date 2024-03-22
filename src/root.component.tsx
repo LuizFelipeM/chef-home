@@ -113,11 +113,14 @@ export default function Root(props) {
                         {article.publishedAt ? toDate(article.publishedAt).toLocaleDateString('en-US') : ''}
                       </span>
                       <br />
-                      Source: <a href={article.url}>{article.source?.name ?? article.url}</a>
+                      Source:
+                      <a href={article.url} target="_blank">
+                        {article.source?.name ?? article.url}
+                      </a>
                     </p>
                     <div className="content">
                       {article.content.replace(/\[\++.*\]/g, "")}
-                      <a href={article.url}>read more</a>
+                      <a href={article.url} target="_blank">read more</a>
                     </div>
                   </div>
                 </article>
