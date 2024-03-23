@@ -63,69 +63,71 @@ export default function Root(props) {
 
   return (
     <>
-      <div className="tile is-ancestor">
-        <div className="tile is-vertical">
-          <div className="tile">
-            <div className="tile is-parent is-vertical">
-              <article className="tile is-child box">
-                <p className="title">A selected recipe for you</p>
-                <p className="subtitle">{recipe?.title}</p>
-                <a onClick={onClick}>
-                  <figure className="image is-5by4">
-                    <img src={recipe?.image} alt={recipe?.title} />
-                  </figure>
-                </a>
-              </article>
-              <article className="tile is-child box">
-                <p className="title">About Chef</p>
-                <p className="subtitle">A hub created by passion</p>
+      <div className="fixed-grid has-2-cols">
+        <div className="grid">
+          <div className="cell">
+            <article className="box">
+              <p className="title">A selected recipe for you</p>
+              <p className="subtitle">{recipe?.title}</p>
+              <a onClick={onClick}>
+                <figure className="image is-5by4">
+                  <img src={recipe?.image} alt={recipe?.title} />
+                </figure>
+              </a>
+            </article>
+          </div>
+
+          <div className="cell is-row-span-2 is-flex is-flex-direction-column is-justify-content-space-between">
+            {articles?.map((article, i) => (
+              <article key={i} className="box">
                 <div className="content">
-                  <article className="media">
-                    <figure className="media-left">
-                      <p className="image is-128x128">
-                        <img src={profilePic} />
-                      </p>
-                    </figure>
-                    <div className="media-content">
-                      <div className="content">
-                        <p>
-                          <strong>Luiz Moura</strong> <a href="https://github.com/LuizFelipeM/" target="_blank"><small>@LuizFelipeM</small></a>
-                          <br />
-                          The chef was inspired by my own cooking passion experiencing new recipes.
-                          It started as a side project just to learn new technologies and ended up as a hub to discover new recipes for me.
-                          <br />
-                          I hope it can help you too.
-                        </p>
-                      </div>
-                    </div>
-                  </article>
+                  <p className="title">{article.title}</p>
+                  <p className="subtitle">
+                    Author: {article.author}
+                    <span className="is-pulled-right">
+                      {article.publishedAt ? toDate(article.publishedAt).toLocaleDateString('en-US') : ''}
+                    </span>
+                    <br />
+                    Source:
+                    <a href={article.url} target="_blank">
+                      {article.source?.name ?? article.url}
+                    </a>
+                  </p>
+                  <div className="content">
+                    {article.content.replace(/\[\++.*\]/g, "")}
+                    <a href={article.url} target="_blank">read more</a>
+                  </div>
                 </div>
               </article>
-            </div>
-            <div className="tile is-parent is-vertical">
-              {articles?.map((article, i) => (
-                <article key={i} className="tile is-child box">
-                  <div className="content">
-                    <p className="title">{article.title}</p>
-                    <p className="subtitle">
-                      Author: {article.author}
-                      <span className="is-pulled-right">
-                        {article.publishedAt ? toDate(article.publishedAt).toLocaleDateString('en-US') : ''}
-                      </span>
-                      <br />
-                      Source:
-                      <a href={article.url} target="_blank">
-                        {article.source?.name ?? article.url}
-                      </a>
+            ))}
+          </div>
+
+          <div className="cell">
+            <article className="box">
+              <p className="title">About Chef</p>
+              <p className="subtitle">A hub created by passion</p>
+              <div className="content">
+                <article className="media">
+                  <figure className="media-left">
+                    <p className="image is-128x128">
+                      <img src={profilePic} />
                     </p>
+                  </figure>
+                  <div className="media-content">
                     <div className="content">
-                      {article.content.replace(/\[\++.*\]/g, "")}
-                      <a href={article.url} target="_blank">read more</a>
+                      <p>
+                        <strong>Luiz Moura</strong> <a href="https://github.com/LuizFelipeM/" target="_blank"><small>@LuizFelipeM</small></a>
+                        <br />
+                        The chef was inspired by my own cooking passion experiencing new recipes.
+                        It started as a side project just to learn new technologies and ended up as a hub to discover new recipes for me.
+                        <br />
+                        I hope it can help you too.
+                      </p>
                     </div>
                   </div>
                 </article>
-              ))}
-            </div>
+              </div>
+            </article>
           </div>
         </div>
       </div>
