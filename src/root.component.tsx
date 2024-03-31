@@ -63,7 +63,7 @@ export default function Root(props) {
 
   return (
     <>
-      <div className="fixed-grid has-2-cols">
+      <div className="fixed-grid has-1-cols-mobile has-2-cols-tablet">
         <div className="grid">
           <div className="cell">
             <article className="box">
