@@ -8,6 +8,8 @@
     Chef Home - Single-SPA Application
 </h1>
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/222b4446-7185-4b5b-bbe3-5f4dacbda778/deploy-status)](https://app.netlify.com/sites/chef-home/deploys)
+
 This project was created to learn a set of [techonologies](#technologies). They are implemented just for fun in a recipes search website called Chef.
 
 This repository is the Single-SPA Application responsible for providing a home page providing simple information as a choosen recipe and news related to food industry.
